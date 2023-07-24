@@ -1,0 +1,17 @@
+{
+  "imports": {
+    "hono": "https://deno.land/x/hono@v3.3.1/mod.ts",
+    "hono-middleware": "https://deno.land/x/hono@v3.3.2/middleware.ts",
+    "dotenv": "https://deno.land/x/dotenv@v3.2.0/mod.ts",
+    "gramjs": "npm:telegram@^2.17.10",
+    "gramjs-session": "npm:telegram@^2.17.10/sessions/index.js",
+    "bcrypt": "https://deno.land/x/bcrypt@v0.4.1/mod.ts",
+    "ulid": "npm:ulid@2.3.0",
+    "deno-fs": "https://deno.land/std@0.195.0/fs/mod.ts",
+    "sqlite": "https://deno.land/x/sqlite@v3.5.0/mod.ts"
+  },
+  "tasks": {
+    "dev": "deno run --watch --allow-net --allow-env --allow-read --allow-write --allow-ffi --allow-sys main.ts",
+    "serve": "deno run --allow-net --allow-env --allow-read --allow-write --allow-ffi --allow-sys main.ts"
+  }
+}
