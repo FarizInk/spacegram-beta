@@ -11,11 +11,11 @@ const app = new Hono();
 const api = app.basePath("/api");
 app.use("*", logger());
 
-app.get("/", async (c) => {
+app.get("/", (c) => {
 
-  for await (const dirEntry of Deno.readDir(config().TMP_PATH)) {
-    console.log(dirEntry);
-  }
+  // for await (const dirEntry of Deno.readDir(config().TMP_PATH)) {
+  //   console.log(dirEntry);
+  // }
 
   return c.text("Hello Hono!")
 });
