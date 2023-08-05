@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { logger } from "hono-middleware";
+import { logger, serveStatic } from "hono-middleware";
 import { config } from "dotenv";
 import createTicket from "./utils/createTicket.ts";
 import store from "./actions/store.ts";
@@ -9,16 +9,28 @@ import deleteFile from "./actions/delete.ts";
 
 const app = new Hono();
 const api = app.basePath("/api");
-app.use("*", logger());
+if (config().APP_ENV === "local") {
+  app.use("*", logger());
+}
 
-app.get("/", (c) => {
+app.get(
+  "/*",
+  serveStatic({
+    root: "./",
+    rewriteRequestPath: (path) => path.replace(/^\//, "/views/"),
+  }),
+);
 
-  // for await (const dirEntry of Deno.readDir(config().TMP_PATH)) {
-  //   console.log(dirEntry);
-  // }
+// app.get("/", (c) => {
 
-  return c.text("Hello Hono!")
-});
+//   // for await (const dirEntry of Deno.readDir(config().TMP_PATH)) {
+//   //   console.log(dirEntry);
+//   // }
+//   // console.log(new TextDecoder().decode(Deno.readFileSync('./dist/client/index.html')));
+
+//   return c.html(new TextDecoder().decode(Deno.readFileSync('./dist/client/index.html')))
+// });
+
 app.get("/file/:filename", async (c) => await get(c));
 
 api.get("/ticket", (c) => {
