@@ -13,13 +13,7 @@ if (config().APP_ENV === "local") {
   app.use("*", logger());
 }
 
-app.get(
-  "/*",
-  serveStatic({
-    root: "./",
-    rewriteRequestPath: (path) => path.replace(/^\//, "/views/"),
-  }),
-);
+app.get("/", (c) => c.body('Hello World!'))
 
 // app.get("/", (c) => {
 

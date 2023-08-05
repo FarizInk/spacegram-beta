@@ -1,4 +1,4 @@
-import { HTTPException, Context } from "hono";
+import { Context, HTTPException } from "hono";
 import connect from "../utils/clientConnect.ts";
 import authenticate from "../utils/authenticate.ts";
 import getMessageById from "../utils/getMessageById.ts";
@@ -8,7 +8,7 @@ export default async (context: Context) => {
   authenticate(context);
   const client = await connect();
 
-  const identifier = context.req.param('identifier')
+  const identifier = context.req.param("identifier");
   const result = await getMessageById(identifier, client);
 
   if (!result) {
@@ -23,5 +23,5 @@ export default async (context: Context) => {
 
   context.json({
     id: identifier,
-  })
+  });
 };

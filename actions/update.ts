@@ -15,7 +15,7 @@ export default async (c: Context) => {
 
   const client = await connect();
 
-  const identifier = c.req.param('identifier')
+  const identifier = c.req.param("identifier");
   const result = await getMessageById(identifier, client);
 
   if (!result) {
@@ -26,13 +26,14 @@ export default async (c: Context) => {
   const {
     path,
     ext: fileExt,
-    filename,
+    time,
     fileType,
-  } = await saveFile(body.content, identifier);
+  } = await saveFile(body.content, identifier, body.content instanceof Blob);
 
   await client.editMessage(config().GROUP_ID, {
     message: result.id,
-    text: identifier,
+    text:
+      `id: ${identifier}\r\ntime: ${time}\r\ntype: ${fileType}\r\nextexsion: ${fileExt}\r\npermission: public`,
     forceDocument: true,
     file: path,
   });
@@ -41,7 +42,7 @@ export default async (c: Context) => {
 
   return c.json({
     id: identifier,
-    original_filename: filename,
+    time,
     type: fileType,
     extension: fileExt,
   });
