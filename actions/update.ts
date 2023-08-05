@@ -4,9 +4,10 @@ import saveFile from "../utils/saveFile.ts";
 import authenticate from "../utils/authenticate.ts";
 import getMessageById from "../utils/getMessageById.ts";
 import { config } from "dotenv";
+import {get as getFileInfo, generate as generateFormat} from '../utils/format.ts'
 
 export default async (c: Context) => {
-  authenticate(c);
+  // authenticate(c);
 
   const body = await c.req.parseBody();
   if (body.content === undefined) {
@@ -30,20 +31,25 @@ export default async (c: Context) => {
     fileType,
   } = await saveFile(body.content, identifier, body.content instanceof Blob);
 
+  const createdAt = getFileInfo(result.message, 'created_at')
+
+  const fileInfo = {
+    id: identifier,
+    type: fileType,
+    extension: fileExt,
+    permission: 'public',
+    updated_at: time,
+    created_at: createdAt !== null ? parseInt(createdAt) : null,
+  }
+
   await client.editMessage(config().GROUP_ID, {
     message: result.id,
-    text:
-      `id: ${identifier}\r\ntime: ${time}\r\ntype: ${fileType}\r\nextexsion: ${fileExt}\r\npermission: public`,
+    text: generateFormat(fileInfo),
     forceDocument: true,
     file: path,
   });
 
   await client.disconnect();
 
-  return c.json({
-    id: identifier,
-    time,
-    type: fileType,
-    extension: fileExt,
-  });
+  return c.json(fileInfo);
 };

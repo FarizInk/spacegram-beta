@@ -5,6 +5,7 @@ import saveFile from "../utils/saveFile.ts";
 import authenticate from "../utils/authenticate.ts";
 import getMessageById from "../utils/getMessageById.ts";
 import { config } from "dotenv";
+import {generate as generateFormat} from "../utils/format.ts"
 
 export default async (c: Context) => {
   authenticate(c);
@@ -39,9 +40,17 @@ export default async (c: Context) => {
     fileType,
   } = await saveFile(body.content, id, body.content instanceof Blob);
 
+  const fileInfo = {
+    id: id,
+    type: fileType,
+    extension: fileExt,
+    permission: 'public',
+    updated_at: time,
+    created_at: time,
+  }
+
   await client.sendFile(config().GROUP_ID, {
-    caption:
-      `id: ${id}\r\ntime: ${time}\r\ntype: ${fileType}\r\nextexsion: ${fileExt}\r\npermission: public`,
+    caption: generateFormat(fileInfo),
     file: path,
     forceDocument: true, // send file with uncompressed
     progressCallback: (progress) => {
@@ -51,10 +60,5 @@ export default async (c: Context) => {
 
   await client.disconnect();
 
-  return c.json({
-    id: id,
-    time,
-    type: fileType,
-    extension: fileExt,
-  });
+  return c.json(fileInfo);
 };
