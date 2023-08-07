@@ -7,7 +7,7 @@ import { config } from "dotenv";
 import {get as getFileInfo, generate as generateFormat} from '../utils/format.ts'
 
 export default async (c: Context) => {
-  // authenticate(c);
+  authenticate(c);
 
   const body = await c.req.parseBody();
   if (body.content === undefined) {

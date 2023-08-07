@@ -8,7 +8,7 @@ import { config } from "dotenv";
 import {generate as generateFormat} from "../utils/format.ts"
 
 export default async (c: Context) => {
-  // authenticate(c);
+  authenticate(c);
 
   const contentType = c.req.header("content-type");
   const body = contentType === "application/json"
