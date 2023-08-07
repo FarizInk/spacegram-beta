@@ -8,7 +8,7 @@ import { config } from "dotenv";
 import {generate as generateFormat} from "../utils/format.ts"
 
 export default async (c: Context) => {
-  authenticate(c);
+  // authenticate(c);
 
   const contentType = c.req.header("content-type");
   const body = contentType === "application/json"
@@ -38,15 +38,17 @@ export default async (c: Context) => {
     ext: fileExt,
     time,
     fileType,
-  } = await saveFile(body.content, id, body.content instanceof Blob);
+  } = await saveFile(body.content, id, body.content instanceof Blob, body.permission === 'private');
 
   const fileInfo = {
     id: id,
     type: fileType,
     extension: fileExt,
-    permission: 'public',
+    permission: body.permission ?? 'public',
     updated_at: time,
     created_at: time,
+    updated_at_date: new Date(time * 1000).toISOString().split("T")[0],
+    created_at_date: new Date(time * 1000).toISOString().split("T")[0],
   }
 
   await client.sendFile(config().GROUP_ID, {

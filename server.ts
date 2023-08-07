@@ -6,7 +6,6 @@ import store from "./actions/store.ts";
 import get from "./actions/get.ts";
 import update from "./actions/update.ts";
 import deleteFile from "./actions/delete.ts";
-import {generate as generateFormat} from "./utils/format.ts"
 
 const app = new Hono();
 const api = app.basePath("/api");
@@ -27,6 +26,7 @@ app.get("/", (c) => c.body('Hello World!'))
 // });
 
 app.get("/file/:filename", async (c) => await get(c));
+app.post("/file/:filename", async (c) => await get(c, true));
 
 api.get("/ticket", (c) => {
   const ticket = createTicket();

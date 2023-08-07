@@ -29,7 +29,7 @@ export default async (c: Context) => {
     ext: fileExt,
     time,
     fileType,
-  } = await saveFile(body.content, identifier, body.content instanceof Blob);
+  } = await saveFile(body.content, identifier, body.content instanceof Blob, body.permission === 'private');
 
   const createdAt = getFileInfo(result.message, 'created_at')
 
@@ -37,9 +37,11 @@ export default async (c: Context) => {
     id: identifier,
     type: fileType,
     extension: fileExt,
-    permission: 'public',
+    permission: body.permission ?? 'public',
     updated_at: time,
     created_at: createdAt !== null ? parseInt(createdAt) : null,
+    updated_at_date: new Date(time * 1000).toISOString().split("T")[0],
+    created_at_date: createdAt !== null ? new Date(createdAt * 1000).toISOString().split("T")[0] : null,
   }
 
   await client.editMessage(config().GROUP_ID, {
@@ -47,6 +49,9 @@ export default async (c: Context) => {
     text: generateFormat(fileInfo),
     forceDocument: true,
     file: path,
+    progressCallback: (progress) => { // NOTE: progress not work
+      console.log(progress);
+    },
   });
 
   await client.disconnect();

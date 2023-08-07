@@ -3,12 +3,17 @@ import { Api } from "gramjs";
 import connect from "../utils/clientConnect.ts";
 import { config } from "dotenv";
 import { existsSync } from "deno-fs";
+import authenticate from "../utils/authenticate.ts";
 
-export default async (c: Context) => {
+export default async (c: Context, isPrivate = false) => {
   const filename = c.req.param("filename");
   const splitFilename = filename.split(".");
   const ulid = splitFilename[0];
-  const path = config().TMP_PATH + filename;
+  const path = config().TMP_PATH + (isPrivate ? 'private/' : '') + filename;
+
+  if (isPrivate) {
+    authenticate(c)
+  }
 
   if (existsSync(path)) {
     const result = Deno.readFileSync(path);

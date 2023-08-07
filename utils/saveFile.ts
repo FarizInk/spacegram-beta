@@ -2,8 +2,7 @@ import { config } from "dotenv";
 import { existsSync } from "deno-fs";
 import mimeExtension from "./mimeExtension.ts";
 
-// NOTE: fix decission process
-export default async (payload, id: string, isFile = true) => {
+export default async (payload, id: string, isFile = true, isPrivate = false) => {
   let data, extension, fileType
   const time = Math.floor(new Date().getTime() / 1000);
   if (isFile) {
@@ -15,10 +14,14 @@ export default async (payload, id: string, isFile = true) => {
     extension = typeof payload === "object" ? "json" : "txt"
     fileType = typeof payload === "object" ? "application/json" : "text/plain"
   }
-  const path = `${config().TMP_PATH + id}.${extension}`;
-  if (config().TMP_PATH !== "/tmp/" && !existsSync(config().TMP_PATH)) {
-    await Deno.mkdir(config().TMP_PATH, { recursive: true });
+  const basePath = config().TMP_PATH + (isPrivate ? 'private/' : '')
+  const filename = `${id}.${extension}`;
+  if (!existsSync(basePath)) {
+    await Deno.mkdir(basePath, { recursive: true });
   }
+
+  const path = basePath + filename
+
   // upload to tmp folder
   isFile ? Deno.writeFileSync(path, data) : Deno.writeTextFileSync(path, data)
 
