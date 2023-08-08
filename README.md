@@ -9,7 +9,7 @@ Private Storage
    ```
 
 2. Setting your own env
-3. Build frontend (optional)
+3. Build frontend *(optional)*
 
    ```bash
    cd frontend && npm install && npm run build && cd ../
