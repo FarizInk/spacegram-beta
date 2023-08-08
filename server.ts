@@ -6,6 +6,7 @@ import store from "./actions/store.ts";
 import get from "./actions/get.ts";
 import update from "./actions/update.ts";
 import deleteFile from "./actions/delete.ts";
+import { existsSync } from "deno-fs";
 
 const app = new Hono();
 const api = app.basePath("/api");
@@ -13,17 +14,28 @@ if (config().APP_ENV === "local") {
   app.use("*", logger());
 }
 
-app.get("/", (c) => c.body('Hello World!'))
+app.get("/", (c) => {
 
-// app.get("/", (c) => {
+  // for await (const dirEntry of Deno.readDir(config().TMP_PATH)) {
+  //   console.log(dirEntry);
+  // }
+  // console.log(new TextDecoder().decode(Deno.readFileSync('./dist/client/index.html')));
 
-//   // for await (const dirEntry of Deno.readDir(config().TMP_PATH)) {
-//   //   console.log(dirEntry);
-//   // }
-//   // console.log(new TextDecoder().decode(Deno.readFileSync('./dist/client/index.html')));
+  if (existsSync('./frontend/dist/index.html')) {
+    return c.html(new TextDecoder().decode(Deno.readFileSync('./frontend/dist/index.html')))
+  } else {
+    return c.body('Hello World!')
+  }
+});
 
-//   return c.html(new TextDecoder().decode(Deno.readFileSync('./dist/client/index.html')))
-// });
+app.get(
+  '/assets/*',
+  serveStatic({
+    root: './',
+    rewriteRequestPath: (path) => path.replace(/^\/assets/, '/frontend/dist/assets/'),
+  })
+  )
+
 
 app.get("/file/:filename", async (c) => await get(c));
 app.post("/file/:filename", async (c) => await get(c, true));
