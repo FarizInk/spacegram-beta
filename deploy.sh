@@ -1,8 +1,6 @@
 #!/bin/sh
-git reset --hard &&
 docker compose down &&
 git pull &&
-chmod +x deploy.sh &&
 cd frontend &&
 npm install &&
 npm run build &&
