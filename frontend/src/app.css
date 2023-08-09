@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#container > .dropzone {
+    background-color: transparent !important;
+    border-radius: 10px !important;
+    min-height: 100vh;
+    border: none;
+    cursor: default;
+}
+
+#logo-container > .dropzone {
+    background-color: transparent !important;
+    border: none;
+    padding: 0px;
+    flex: none;
+}

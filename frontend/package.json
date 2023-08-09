@@ -20,5 +20,9 @@
     "tslib": "^2.6.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
+  },
+  "dependencies": {
+    "svelte-file-dropzone": "^2.0.2",
+    "svelte-sonner": "^0.1.2"
   }
 }
