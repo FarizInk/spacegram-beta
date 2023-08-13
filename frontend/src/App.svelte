@@ -18,6 +18,19 @@
     files.accepted = [...files.accepted, ...acceptedFiles];
     files.rejected = [...files.rejected, ...fileRejections];
   }
+
+  // src: https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
+  const calculateSize = (bytes, decimals = 2) => {
+    if (!+bytes) return '0 Bytes'
+
+    const k = 1024
+    const dm = decimals < 0 ? 0 : decimals
+    const sizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB']
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+  }
 </script>
 
 <div id="container" class="bg-white min-w-screen min-h-screen relative isolate">
@@ -68,12 +81,30 @@
         </a>
       </div>
 
-      <div class="mt-10">
-        <ol>
-          {#each files.accepted as item}
-            <li>{item.name}</li>
+      <div class="mt-10 space-y-4">
+          {#each files.accepted.reverse() as item}
+          <div class="rounded-lg border-2 border-gray-500 p-2 hover:border-gray-900">
+            <div class="flex gap-2 items-center justify-between">
+              <div>
+                icon
+              </div>
+              <div class="flex-1">
+                <div class="text-black">
+                  { item.name }
+                </div>
+                <div class="text-sm text-gray-600">
+                  { calculateSize(item.size) }
+                </div>
+              </div>
+              <div>
+                icon
+              </div>
+            </div>
+            <div class="mt-2">
+              progress bar
+            </div>
+          </div>
           {/each}
-        </ol>
       </div>
     </div>
 
