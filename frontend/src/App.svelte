@@ -1,40 +1,71 @@
 <script lang="ts">
-  import svelteLogo from "./assets/svelte.svg";
-  import honoLogo from "./assets/hono.png";
   import Dropzone from "svelte-file-dropzone/Dropzone.svelte";
-  import LoveIcon from "./icons/LoveIcon.svelte";
-  import DenoLogo from "./assets/Deno_2021.svg";
-  import tailwindLogo from "./assets/tailwind.svg";
   import ZasiferIcon from "./icons/ZasiferIcon.svelte";
+  import FileUploadIcon from "./icons/FileUploadIcon.svelte";
+  import CloseIcon from "./icons/CloseIcon.svelte";
+  import FileTextIcon from "./icons/FileTextIcon.svelte";
+  import ArrowSquareOutIcon from "./icons/ArrowSquareOutIcon.svelte";
+  import Header from "./components/Header.svelte";
 
-  let files = {
-    accepted: [],
-    rejected: [],
-  };
+  let files = [];
 
   function handleFilesSelect(e) {
+    containerDragDrop = false;
     const { acceptedFiles, fileRejections } = e.detail;
 
-    files.accepted = [...files.accepted, ...acceptedFiles];
-    files.rejected = [...files.rejected, ...fileRejections];
+    files = [...files, ...acceptedFiles];
   }
 
   // src: https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
   const calculateSize = (bytes, decimals = 2) => {
-    if (!+bytes) return '0 Bytes'
+    if (!+bytes) return "0 Bytes";
 
-    const k = 1024
-    const dm = decimals < 0 ? 0 : decimals
-    const sizes = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB']
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = [
+      "Bytes",
+      "KiB",
+      "MiB",
+      "GiB",
+      "TiB",
+      "PiB",
+      "EiB",
+      "ZiB",
+      "YiB",
+    ];
 
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
-  }
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+  };
+
+  let containerDragDrop = false;
+  const handleDragEnter = () => containerDragDrop = true
+  const handleDragLeave = () => containerDragDrop = false
+  const maxSizeUpload = 104857600
+  const acctAttr = ['application/json', 'video/*', 'image/*']
 </script>
 
+{#if containerDragDrop}
+  <div class="absolute w-screen h-screen bg-white bg-opacity-60 z-10 p-12">
+    <div
+      class="w-full h-full border-2 border-black border-dashed flex flex-col items-center justify-center rounded-xl"
+    >
+      <FileUploadIcon class="w-[200px]" />
+      <div>Maximum file size 100 MB.</div>
+    </div>
+  </div>
+{/if}
+
 <div id="container" class="bg-white min-w-screen min-h-screen relative isolate">
-  <Dropzone on:drop={handleFilesSelect} noClick>
+  <Dropzone
+    on:drop={handleFilesSelect}
+    noClick
+    on:dragenter={handleDragEnter}
+    on:dragleave={handleDragLeave}
+    maxSize={maxSizeUpload}
+    accept={acctAttr}
+  >
     <div
       class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
       aria-hidden="true"
@@ -46,65 +77,58 @@
     </div>
 
     <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-      <div id="logo-container" class="relativeflex items-center justify-center mb-5">
-        <Dropzone on:drop={handleFilesSelect} noDrag>
-          <ZasiferIcon class="w-10 text-black hover:scale-125 ease-in-out duration-100" />
-          <ZasiferIcon class="w-10 text-black absolute animate-ping opacity-40 -z-10" />
+      <div
+        id="logo-container"
+        class="relativeflex items-center justify-center mb-5"
+      >
+        <Dropzone on:drop={handleFilesSelect} noDrag maxSize={maxSizeUpload} accept={acctAttr}>
+          <ZasiferIcon
+            class="w-10 text-black hover:scale-125 ease-in-out duration-100"
+          />
+          <ZasiferIcon
+            class="w-10 text-black absolute animate-ping opacity-40 -z-10"
+          />
         </Dropzone>
       </div>
 
-      <div class="flex justify-center">
-        <div
-          class="relative flex gap-1 rounded-full px-3 py-1 text-sm leading-6 text-gray-900 ring-1 ring-gray-900/10 hover:ring-gray-800/20"
-        >
-          Made with <LoveIcon class="w-4 text-red-600" /> by Fariz in
-          <a href="/" class="font-semibold text-indigo-600">Surabaya</a>
-        </div>
-      </div>
-
-      <div
-        class="flex flex-wrap items-center justify-center gap-1 mt-2 text-gray-800 text-sm"
-      >
-        <span class="text-gray-500 mr-2 text-xs">Version 1.0</span>
-        <span class="mr-1">Build with</span>
-        <a href="https://deno.land/">
-          <img class="h-7 w-auto" src={DenoLogo} alt="Deno Logo" />
-        </a>
-        <a href="https://hono.dev/">
-          <img class="h-7 w-auto" src={honoLogo} alt="Hono Logo" />
-        </a>
-        <a href="https://svelte.dev/">
-          <img class="h-6 w-auto" src={svelteLogo} alt="Svelte Logo" />
-        </a>
-        <a href="https://svelte.dev/">
-          <img class="h-6 w-auto ml-1" src={tailwindLogo} alt="Tailwind Logo" />
-        </a>
-      </div>
+      <Header/>
 
       <div class="mt-10 space-y-4">
-          {#each files.accepted.reverse() as item}
-          <div class="rounded-lg border-2 border-gray-500 p-2 hover:border-gray-900">
-            <div class="flex gap-2 items-center justify-between">
-              <div>
-                icon
-              </div>
-              <div class="flex-1">
-                <div class="text-black">
-                  { item.name }
-                </div>
-                <div class="text-sm text-gray-600">
-                  { calculateSize(item.size) }
-                </div>
-              </div>
-              <div>
-                icon
-              </div>
+        {#each files.reverse() as item}
+          <div
+            class="group relative rounded-lg border-2 border-black max-w-[400px]"
+          >
+            <div class="absolute opacity-0 w-full h-full bg-black text-white group-hover:opacity-100 flex justify-center items-center gap-2">
+              <button type="button" class="p-2 text-green-500 border border-green-500 rounded-full hover:bg-green-500 hover:text-white">
+                <ArrowSquareOutIcon class="w-4" />
+              </button>
+              <button type="button" class="p-2 text-red-500 border border-red-500 rounded-full hover:bg-red-500 hover:text-white">
+                <CloseIcon class="w-4" />
+              </button>
             </div>
-            <div class="mt-2">
-              progress bar
+            <div class="p-2">
+              <div class="flex gap-2 justify-between items-center">
+                <FileTextIcon class="w-7 text-black"/>
+                <div class="flex-1 max-w-[300px]">
+                  <div class="text-black truncate font-semibold">
+                    {item.name}
+                  </div>
+                  <div class="text-sm text-gray-500">
+                    {calculateSize(item.size)}
+                  </div>
+                </div>
+              </div>
+              <div class="mt-1 flex items-center gap-2 text-black">
+                <div class="rounded-full border border-black w-full h-2 flex-1">
+                  <div class="bg-black h-full" style="width: 90%;" />
+                </div>
+                <div class="flex items-center justify-center text-sm">
+                  100%
+                </div>
+              </div>
             </div>
           </div>
-          {/each}
+        {/each}
       </div>
     </div>
 

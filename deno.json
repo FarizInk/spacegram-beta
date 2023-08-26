@@ -12,6 +12,7 @@
   },
   "tasks": {
     "dev": "deno run --watch --allow-net --allow-env --allow-read --allow-write --allow-ffi --allow-sys server.ts",
-    "serve": "deno run --allow-net --allow-env --allow-read --allow-write --allow-ffi --allow-sys server.ts"
+    "serve": "deno run --allow-net --allow-env --allow-read --allow-write --allow-ffi --allow-sys server.ts",
+    "build": "cd frontend && npm install && npm run build && rm -rf node_modules"
   }
 }
