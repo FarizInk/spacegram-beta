@@ -40,24 +40,13 @@
   };
 
   let containerDragDrop = false;
-  const handleDragEnter = () => containerDragDrop = true
-  const handleDragLeave = () => containerDragDrop = false
-  const maxSizeUpload = 104857600
-  const acctAttr = ['application/json', 'video/*', 'image/*']
+  const handleDragEnter = () => (containerDragDrop = true);
+  const handleDragLeave = () => (containerDragDrop = false);
+  const maxSizeUpload = 104857600;
+  const acctAttr = ["application/json", "video/*", "image/*"];
 </script>
 
-{#if containerDragDrop}
-  <div class="absolute w-screen h-screen bg-white bg-opacity-60 z-10 p-12">
-    <div
-      class="w-full h-full border-2 border-black border-dashed flex flex-col items-center justify-center rounded-xl"
-    >
-      <FileUploadIcon class="w-[200px]" />
-      <div>Maximum file size 100 MB.</div>
-    </div>
-  </div>
-{/if}
-
-<div id="container" class="bg-white min-w-screen min-h-screen relative isolate">
+<div id="container" class="bg-white min-w-screen min-h-screen relative isolate max-w-screen overflow-hidden">
   <Dropzone
     on:drop={handleFilesSelect}
     noClick
@@ -66,6 +55,17 @@
     maxSize={maxSizeUpload}
     accept={acctAttr}
   >
+    {#if containerDragDrop}
+      <div class="absolute w-screen h-screen bg-white bg-opacity-60 z-10 p-12 top-0 left-0 text-black">
+        <div
+          class="w-full h-full border-2 border-black border-dashed flex flex-col items-center justify-center rounded-xl"
+        >
+          <FileUploadIcon class="w-[200px]" />
+          <div>Maximum file size 100 MB.</div>
+        </div>
+      </div>
+    {/if}
+
     <div
       class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
       aria-hidden="true"
@@ -81,7 +81,12 @@
         id="logo-container"
         class="relativeflex items-center justify-center mb-5"
       >
-        <Dropzone on:drop={handleFilesSelect} noDrag maxSize={maxSizeUpload} accept={acctAttr}>
+        <Dropzone
+          on:drop={handleFilesSelect}
+          noDrag
+          maxSize={maxSizeUpload}
+          accept={acctAttr}
+        >
           <ZasiferIcon
             class="w-10 text-black hover:scale-125 ease-in-out duration-100"
           />
@@ -91,24 +96,32 @@
         </Dropzone>
       </div>
 
-      <Header/>
+      <Header />
 
       <div class="mt-10 space-y-4">
         {#each files.reverse() as item}
           <div
             class="group relative rounded-lg border-2 border-black max-w-[400px]"
           >
-            <div class="absolute opacity-0 w-full h-full bg-black text-white group-hover:opacity-100 flex justify-center items-center gap-2">
-              <button type="button" class="p-2 text-green-500 border border-green-500 rounded-full hover:bg-green-500 hover:text-white">
+            <div
+              class="absolute opacity-0 w-full h-full bg-black text-white group-hover:opacity-100 flex justify-center items-center gap-2"
+            >
+              <button
+                type="button"
+                class="p-2 text-green-500 border border-green-500 rounded-full hover:bg-green-500 hover:text-white"
+              >
                 <ArrowSquareOutIcon class="w-4" />
               </button>
-              <button type="button" class="p-2 text-red-500 border border-red-500 rounded-full hover:bg-red-500 hover:text-white">
+              <button
+                type="button"
+                class="p-2 text-red-500 border border-red-500 rounded-full hover:bg-red-500 hover:text-white"
+              >
                 <CloseIcon class="w-4" />
               </button>
             </div>
             <div class="p-2">
               <div class="flex gap-2 justify-between items-center">
-                <FileTextIcon class="w-7 text-black"/>
+                <FileTextIcon class="w-7 text-black" />
                 <div class="flex-1 max-w-[300px]">
                   <div class="text-black truncate font-semibold">
                     {item.name}
@@ -122,9 +135,7 @@
                 <div class="rounded-full border border-black w-full h-2 flex-1">
                   <div class="bg-black h-full" style="width: 90%;" />
                 </div>
-                <div class="flex items-center justify-center text-sm">
-                  100%
-                </div>
+                <div class="flex items-center justify-center text-sm">100%</div>
               </div>
             </div>
           </div>

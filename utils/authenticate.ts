@@ -1,8 +1,6 @@
 import { Context, HTTPException } from "hono";
-import { Api } from "gramjs";
 import * as bcrypt from "bcrypt";
 import { config } from "dotenv";
-import connect from "./clientConnect.ts";
 import db from "../database.ts";
 
 export default (context: Context) => {

@@ -21,7 +21,7 @@ app.get("/", (c) => {
   // }
   // console.log(new TextDecoder().decode(Deno.readFileSync('./dist/client/index.html')));
 
-  if (existsSync('./frontend/dist/index.html')) {
+  if (existsSync('./frontend/dist/index.html') && config().TMP_MODE.toLowerCase() === 'true') {
     return c.html(new TextDecoder().decode(Deno.readFileSync('./frontend/dist/index.html')))
   } else {
     return c.body('Hello World!')
@@ -44,8 +44,15 @@ api.get("/ticket", (c) => {
   const ticket = createTicket();
   return c.json({ ticket });
 });
+
 api.post("/store", async (c) => await store(c));
 api.post("/update/:identifier", async (c) => await update(c));
 api.delete("/delete/:identifier", async (c) => await deleteFile(c));
+
+// For Temporary File
+if (config().TMP_MODE.toLowerCase() === 'true') {
+  api.post("/tmp/store", async (c) => await store(c));
+  api.delete("/tmp/delete/:identifier", async (c) => await deleteFile(c));
+}
 
 Deno.serve({ port: parseInt(config().PORT) }, app.fetch);
