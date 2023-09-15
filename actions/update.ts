@@ -9,7 +9,11 @@ import {get as getFileInfo, generate as generateFormat} from '../utils/format.ts
 export default async (c: Context) => {
   authenticate(c);
 
-  const body = await c.req.parseBody();
+  const contentType = c.req.header("content-type");
+  const body = contentType === "application/json"
+    ? await c.req.json()
+    : await c.req.parseBody();
+    
   if (body.content === undefined) {
     throw new HTTPException(403, { message: "Content must be filled" });
   }
